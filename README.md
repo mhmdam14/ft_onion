@@ -30,7 +30,8 @@ This project is a small, self-contained environment for experimenting with:
 1. Build and start the lab:
    - `docker compose up --build`
 
-2. Retrieve the generated onion address from the Tor service logs or hidden service hostname file.
+2. Retrieve the generated onion address from the Tor service container (example):
+   - `docker compose exec tor cat /var/lib/tor/hidden_service/hostname`
 
 3. Connect via Tor browser or Tor client to access the Nginx-served page.
 
