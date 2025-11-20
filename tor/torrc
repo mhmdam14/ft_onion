@@ -1,0 +1,18 @@
+# directory where tor keep its runtime data
+DataDirectory /var/lib/tor
+
+# directory for the hidden service keys and hostname
+# must be writable by tor user inside the container
+HiddenServiceDir /var/lib/tor/hidden_service
+
+# use a version 3 onion address (modern standard)
+HiddenServiceVersion 3
+
+# forward HTTP (port 80) to the nginx container
+HiddenServicePort 80 nginx:80
+
+# forward SSH (port 4242) to the ssh container
+HiddenServicePort 4242 ssh:4242
+
+# Output logs to stdout so Docker can capture them
+Log notice stdout

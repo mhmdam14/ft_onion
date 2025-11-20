@@ -1,0 +1,55 @@
+# webserver container
+services:
+  nginx:
+    build:
+      context: . # build from project root
+      dockerfile: nginx/Dockerfile
+    container_name: tor_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"  # expose nginx on host port 8080
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro  # mount index.html directly
+    networks:
+      - hidden_net # shared network with other containers
+
+# ssh server container
+  ssh:
+    build:
+      context: .
+      dockerfile: ssh/Dockerfile
+    container_name: tor_sshd
+    restart: unless-stopped
+    ports:
+      - "2222:4242"  # expose SSH on host port 2222 (maps to container's 4242)
+    networks:
+      - hidden_net
+    # volume for authorized_keys so we can mount our key
+    volumes:
+      - ssh_authorized_keys:/home/svcuser/.ssh:rw
+
+# tor daemon container
+  tor:
+    build:
+      context: .
+      dockerfile: tor/Dockerfile
+    container_name: tor_daemon
+    restart: unless-stopped
+    networks:
+      - hidden_net
+    depends_on:
+      - nginx
+      - ssh
+    # volume for hidden-service keys and hostname (persistent)
+    volumes:
+      - tor_data:/var/lib/tor
+
+# define an isolated docker network shared by all containers
+networks:
+  hidden_net:
+    driver: bridge
+
+# define volumes for data persistence
+volumes:
+  tor_data: {}
+  ssh_authorized_keys: {}

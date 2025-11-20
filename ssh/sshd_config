@@ -1,0 +1,25 @@
+# Listen on port 4242
+Port 4242
+
+# do not allow root login for security
+PermitRootLogin no
+
+# disable password-based logins (use SSH keys)
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+usePAM no
+
+# enable public-key authentication
+PubkeyAuthentication yes
+
+# location of authorized keys for users
+AuthorizedKeysFile .ssh/authorized_keys
+
+# forbid empty passwords
+PermitEmptyPasswords no
+
+# SFTP subsystem (internal to OpenSSH)
+Subsystem sftp internal-sftp
+
+# Log to stderr so Docker can show logs
+LogLevel INFO
